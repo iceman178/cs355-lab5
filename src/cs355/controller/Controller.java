@@ -8,10 +8,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.sun.glass.events.KeyEvent;
+
 import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
 import cs355.model.drawing.*;
+import cs355.model.scene.Point3D;
+import cs355.model.scene.SceneModel;
 import cs355.solution.CS355;
+import javafx.scene.Scene;
 
 public class Controller implements CS355Controller {
 
@@ -21,12 +26,18 @@ public class Controller implements CS355Controller {
 	public static final double ZOOMOUT = 0.5;
 	public static final double ZOOMMIN = 0.25;
 	public static final double ZOOMMAX = 4.0;
+	private static final float nearPlane = 1.0f;
+	private static final float farPlane = 250.0f;
+	private final float movementUnit = 1.2f;
 	
 	private double zoom;
 	private double scrollerSize;
 	private boolean updating;
 	private Point2D.Double viewCenter;
 	private IControllerState state;
+	
+	private Point3D cameraHome;
+	private double rotationHome;
 	
 	
 	public static Controller instance() 
@@ -44,6 +55,9 @@ public class Controller implements CS355Controller {
 		this.updating = false;
 		this.viewCenter = new Point2D.Double(0, 0);
 		this.state = new ControllerNothingState();
+		SceneModel.instance().setCameraPosition(new Point3D(0f, 1.5f, -25));
+		this.cameraHome = SceneModel.instance().getCameraPosition();
+		this.rotationHome = SceneModel.instance().getCameraRotation();
 	}
 	
 	
@@ -318,8 +332,137 @@ public class Controller implements CS355Controller {
 		}
 	}
 	
+	//-----------------------------TRANSFORM FUNCTIONS 3D-------------------------------------TODO
 	
-	//-----------------------------TRANSFORM FUNCTIONS----------------------------------------TODO
+	@Override
+	public void openScene(File file)
+	{
+		SceneModel.instance().open(file);
+		this.cameraHome = SceneModel.instance().getCameraPosition();
+		this.rotationHome = SceneModel.instance().getCameraRotation();
+		GUIFunctions.refresh();	
+	}
+
+	@Override
+	public void keyPressed(Iterator<Integer> iterator) 
+	{
+		if (this.state.getType() != IControllerState.stateType.THREE_DIM) {
+			// DO NOTHING. We are in 2D mode.
+			return;
+		}
+		
+		while (iterator.hasNext())
+		{
+			switch(iterator.next())
+			{
+			case KeyEvent.VK_W:
+				SceneModel.instance().moveForward(this.movementUnit); // Move forward
+				break;
+			case KeyEvent.VK_A:
+				SceneModel.instance().strafe(-this.movementUnit); // Move left
+				break;
+			case KeyEvent.VK_S:
+				SceneModel.instance().moveBackward(this.movementUnit); // Move backward
+				break;
+			case KeyEvent.VK_D:
+				SceneModel.instance().strafe(this.movementUnit); // Move right
+				break;
+			case KeyEvent.VK_Q:
+				SceneModel.instance().yaw(this.movementUnit/8); // Turn left
+				break;
+			case KeyEvent.VK_E:
+				SceneModel.instance().yaw(-this.movementUnit/8); // Turn right
+				break;
+			case KeyEvent.VK_R:
+				SceneModel.instance().changeAltitude(this.movementUnit); // Move up
+				break;
+			case KeyEvent.VK_F:
+				SceneModel.instance().changeAltitude(-this.movementUnit); // Move down
+				break;
+			case KeyEvent.VK_H:
+				SceneModel.instance().setCameraPosition(cameraHome); // Return to the original "home" position and orientation
+				SceneModel.instance().setCameraRotation(rotationHome);
+				break;
+			default:
+				System.out.println("3D Default path");
+			}
+		}
+		
+		GUIFunctions.refresh();
+	}
+
+	@Override
+	public void toggle3DModelDisplay() 
+	{
+		System.out.println("3D button pushed");
+		this.state = new Controller3DState();
+		
+	}
+	
+	public double[] threeDWorldToClip(Point3D point) 
+	{
+		float theta = (float) SceneModel.instance().getCameraRotation();
+		double c_x = SceneModel.instance().getCameraPosition().x;
+		double c_y = SceneModel.instance().getCameraPosition().y;
+		double c_z = SceneModel.instance().getCameraPosition().z;
+		double e = (farPlane + nearPlane) / (farPlane - nearPlane);
+		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
+
+		
+		double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
+		double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
+		double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
+		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
+
+		double[] result = {x, y, z, bigW};
+
+		return result;
+	}
+	
+	public Point3D clipToScreen(Point3D point)
+	{
+		double x = 1024 + (1024 * point.x);
+		double y = 1024 - (1024 * point.y);
+		return new Point3D(x, y, 1);
+	}
+	
+	public boolean clipTest(double[] start, double[] end)
+	{
+		double startX = start[0];
+		double startY = start[1];
+		double startZ = start[2];
+		double startW = start[3];
+
+		double endX = end[0];
+		double endY = end[1];
+		double endZ = end[2];
+		double endW = end[3];
+
+		if ((startX > startW && endX > endW) || (startX < -startW && endX < -endW))
+		{
+			return true;
+		}
+
+		if ((startY > startW && endY > endW) || (startY < -startW && endY < -endW)) 
+		{
+			return true;
+		}
+
+		if ((startZ > startW && endZ > endW))
+		{
+			return true;
+		}
+
+		if (startZ <= -startW || endZ <= -endW)
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
+	
+	//-----------------------------TRANSFORM FUNCTIONS 2D----------------------------------------TODO
 	
 		// AffineTransform af = new AffineTransform(v1,v2,v3,v4,v5,v6)
 		// |v1 v3 v5|
@@ -425,15 +568,6 @@ public class Controller implements CS355Controller {
 	public void mouseExited(MouseEvent arg0) {}
 	
 	@Override
-	public void openScene(File file) {}
-
-	@Override
-	public void toggle3DModelDisplay() {}
-
-	@Override
-	public void keyPressed(Iterator<Integer> iterator) {}
-
-	@Override
 	public void openImage(File file) {} 
 
 	@Override
@@ -477,7 +611,10 @@ public class Controller implements CS355Controller {
 		Controller._instance = _instance;
 	}
 
-	
+	public IControllerState.stateType getState() {
+		return this.state.getType();
+	}
 	
 	
 }
+

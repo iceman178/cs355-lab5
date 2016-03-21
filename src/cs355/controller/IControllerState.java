@@ -6,7 +6,7 @@ public interface IControllerState
 {	
 	public enum stateType 
 	{
-		NOTHING, DRAWING, SELECT
+		NOTHING, DRAWING, SELECT, THREE_DIM
 	}
 	
 	public void mousePressed(MouseEvent arg0);

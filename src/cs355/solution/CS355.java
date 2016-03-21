@@ -25,6 +25,7 @@ public class CS355
 	 */
 	public static void main(String[] args) 
 	{
+		System.out.println("Starting Project....");
 		Controller the_controller = Controller.instance();
 		View the_view = new View();
 		
