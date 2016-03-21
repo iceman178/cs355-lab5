@@ -27,7 +27,8 @@ public class Instance {
 	/**
 	 * A default instance with no model.
 	 */
-	public Instance() {
+	public Instance() 
+	{
 		color = Color.WHITE;
 		position = new Point3D();
 		rotAngle = 0.0;
@@ -35,6 +36,16 @@ public class Instance {
 		model = new WireFrame();
 	}
 
+	public Instance(boolean a) 
+	{
+		color = Color.WHITE;
+		position = new Point3D();
+		rotAngle = 0.0;
+		scale = 1.0;
+		model = new HouseModel();
+	}
+	
+	
 	/**
 	 * A constructor that takes one parameter per field.
 	 * @param color the color of this instance.

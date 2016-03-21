@@ -1,6 +1,7 @@
 package cs355.controller;
 
 import java.awt.event.MouseEvent;
+import java.util.Iterator;
 
 public class ControllerNothingState implements IControllerState 
 {
@@ -27,6 +28,13 @@ public class ControllerNothingState implements IControllerState
 	public stateType getType() 
 	{
 		return stateType.NOTHING;
+	}
+
+	@Override
+	public void keyPressed(Iterator<Integer> iterator) 
+	{
+		// DO NOTHING
+		
 	}
 
 }

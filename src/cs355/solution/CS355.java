@@ -6,6 +6,7 @@ import java.awt.MouseInfo;
 import cs355.GUIFunctions;
 import cs355.controller.Controller;
 import cs355.model.drawing.Model;
+import cs355.model.scene.SceneModel;
 import cs355.view.View;
 
 /**
@@ -31,6 +32,8 @@ public class CS355
 		
 		Model.instance().addObserver(the_view);
 		Model.instance().setSelectedColor(Color.GREEN);
+		
+		SceneModel.instance();
 		
 		GUIFunctions.createCS355Frame(the_controller, the_view);
 		GUIFunctions.changeSelectedColor(Color.GREEN);

@@ -24,6 +24,7 @@ public class CS355Scene extends Observable {
 	 */
 	public CS355Scene() {
 		insts = new ArrayList<>();
+		//insts.add(new Instance(true));
 		camPos = new Point3D();
 		camRot = 0.0;
 	}

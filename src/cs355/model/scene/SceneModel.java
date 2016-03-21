@@ -9,10 +9,9 @@ public class SceneModel extends CS355Scene
 
 	private static SceneModel _instance;
 	
-	private float pitch;
-	private float roll;
+//	private float pitch;
+//	private float roll;
 
-	
 	
 	//If the model had not been initialized, it will be.
 	public static SceneModel instance() {
@@ -28,15 +27,15 @@ public class SceneModel extends CS355Scene
 	{
 		this.setCameraPosition(new Point3D(0.0d, 0.0d, 0.0d));
 		this.setCameraRotation(0.0);
-		this.pitch = 0.0f;
-		this.roll = 0.0f;
+//		this.pitch = 0.0f;
+//		this.roll = 0.0f;
 	}
 	
 	public SceneModel(Point3D location)	{
 		this.setCameraPosition(location);
 		this.setCameraRotation(0.0);
-		this.pitch = 0.0f;
-		this.roll = 0.0f;
+//		this.pitch = 0.0f;
+//		this.roll = 0.0f;
 	}
 
 	public void changeAltitude(float distance) 
@@ -104,15 +103,15 @@ public class SceneModel extends CS355Scene
 		this.setCameraRotation((float)this.getCameraRotation() + yaw);
 	}
 	
-	public void pitch(float pitch) 
-	{
-		this.pitch += pitch;
-	}
-
-	public void roll(float roll) 
-	{
-		this.roll += roll;
-	}
+//	public void pitch(float pitch) 
+//	{
+//		this.pitch += pitch;
+//	}
+//
+//	public void roll(float roll) 
+//	{
+//		this.roll += roll;
+//	}
 
 	
 	//------------------------------Getters and Setters--------------------------
@@ -126,22 +125,21 @@ public class SceneModel extends CS355Scene
 		this.setCameraRotation(yaw);
 	}
 
-	public float getPitch() {
-		return this.pitch;
-	}
-	
-	public void setPitch(float pitch) {
-		this.pitch = pitch;
-	}
-
-	public float getRoll() {
-		return this.roll;
-	}
-	
-	public void setRoll(float roll)	{
-		this.roll = roll;
-	}
-	
+//	public float getPitch() {
+//		return this.pitch;
+//	}
+//	
+//	public void setPitch(float pitch) {
+//		this.pitch = pitch;
+//	}
+//
+//	public float getRoll() {
+//		return this.roll;
+//	}
+//	
+//	public void setRoll(float roll)	{
+//		this.roll = roll;
+//	}
 	
 	
 	

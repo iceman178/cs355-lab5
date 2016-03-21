@@ -1,11 +1,12 @@
 package cs355.model.scene;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class HouseModel extends WireFrame 
+
+public class HouseModel extends WireFrame
 {
+
 	List<Line3D> lines = new ArrayList<>();
 
 	public HouseModel() 
@@ -33,12 +34,13 @@ public class HouseModel extends WireFrame
 		lines.add(new Line3D(new Point3D(0, 8, 5), new Point3D(5, 5, 5)));
 		lines.add(new Line3D(new Point3D(0, 8, -5), new Point3D(0, 8, 5)));
 		// Door
-		lines.add(new Line3D(new Point3D(1, 0, 5), new Point3D(1, 3, 5)));
-		lines.add(new Line3D(new Point3D(-1, 0, 5), new Point3D(-1, 3, 5)));
-		lines.add(new Line3D(new Point3D(1, 3, 5), new Point3D(-1, 3, 5)));
+		lines.add(new Line3D(new Point3D(1, 0, -5), new Point3D(1, 3, -5)));
+		lines.add(new Line3D(new Point3D(-1, 0, -5), new Point3D(-1, 3, -5)));
+		lines.add(new Line3D(new Point3D(1, 3, -5), new Point3D(-1, 3, -5)));
 	}
 
-	public List<Line3D> getLines() {
+	public List<Line3D> getLines() 
+	{
 		return lines;
 	}
 }

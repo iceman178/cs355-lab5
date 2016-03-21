@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
@@ -400,6 +401,12 @@ public class ControllerDrawingState implements IControllerState
 		}
 		
 		Model.instance().updateLastShape(square);
+	}
+
+	@Override
+	public void keyPressed(Iterator<Integer> iterator) 
+	{
+		// DO NOTHING
 	}
 	
 	

@@ -1,6 +1,7 @@
 package cs355.controller;
 
 import java.awt.event.MouseEvent;
+import java.util.Iterator;
 
 public interface IControllerState 
 {	
@@ -14,6 +15,8 @@ public interface IControllerState
 	public void mouseReleased(MouseEvent arg0);
 	
 	public void mouseDragged(MouseEvent arg0);
+	
+	public void keyPressed(Iterator<Integer> iterator);
 	
 	public stateType getType();
 }

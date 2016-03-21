@@ -9,11 +9,18 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 import cs355.GUIFunctions;
 import cs355.controller.Controller;
+import cs355.controller.IControllerState;
 import cs355.model.drawing.*;
+import cs355.model.scene.HouseModel;
+import cs355.model.scene.Instance;
+import cs355.model.scene.Line3D;
+import cs355.model.scene.Point3D;
+import cs355.model.scene.SceneModel;
 
 public class View implements ViewRefresher {
 
@@ -43,6 +50,61 @@ public class View implements ViewRefresher {
 			g2d.draw(shapeFactory(currentShape, g2d, curShapeIndex == a)); 
 			g2d.setColor(currentShape.getColor());
 		}
+		
+		
+		ArrayList<Instance> instCollection = SceneModel.instance().instances();
+		
+		if(Controller.instance().getState() == IControllerState.stateType.THREE_DIM) 
+		{
+			
+			System.out.println("OBJECTS LIST SIZE = " + instCollection.size());
+			g2d.setTransform(Controller.instance().worldToView());
+			for(Instance inst : instCollection) 
+			{
+				g2d.setColor(inst.getColor());
+				List<Line3D> list = inst.getModel().getLines();
+				System.out.println("LINE LIST SIZE = " + list.size());
+				for(Line3D l : list) 
+				{
+					double[] startCoord = Controller.instance().threeDWorldToClip(l.start);
+					double[] endCoord = Controller.instance().threeDWorldToClip(l.end);
+					
+					if (!Controller.instance().clipTest(startCoord, endCoord)) 
+					{
+						Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
+						Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3])); 
+						g2d.drawLine((int) Math.round(start.x), (int) Math.round(start.y), (int) Math.round(end.x), (int) Math.round(end.y));
+					}
+				}
+			}
+			
+		}
+		
+		// Default house
+		if(instCollection.size() == 0)
+		{
+			HouseModel house = new HouseModel();
+			List<Line3D> list = house.getLines();
+			
+			Color houseColor = Color.GREEN;
+			g2d.setColor(houseColor);
+			
+			for(Line3D l : list)
+			{
+				double[] startCoord = Controller.instance().threeDWorldToClip(l.start);
+				double[] endCoord = Controller.instance().threeDWorldToClip(l.end);
+				
+				if (!Controller.instance().clipTest(startCoord, endCoord))
+				{
+					Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
+					Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3])); 
+					g2d.drawLine((int) Math.round(start.x), (int) Math.round(start.y), (int) Math.round(end.x), (int) Math.round(end.y));
+				}
+			}
+		}
+		
+		
+
 	}
 	
 	//Use a factory to determine what type is being dealt with

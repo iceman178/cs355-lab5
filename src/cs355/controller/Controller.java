@@ -18,7 +18,8 @@ import cs355.model.scene.SceneModel;
 import cs355.solution.CS355;
 import javafx.scene.Scene;
 
-public class Controller implements CS355Controller {
+public class Controller implements CS355Controller 
+{
 
 	private static Controller _instance;
 	
@@ -28,7 +29,7 @@ public class Controller implements CS355Controller {
 	public static final double ZOOMMAX = 4.0;
 	private static final float nearPlane = 1.0f;
 	private static final float farPlane = 250.0f;
-	private final float movementUnit = 1.2f;
+	private final float movementUnit = 1.0f;
 	
 	private double zoom;
 	private double scrollerSize;
@@ -346,48 +347,7 @@ public class Controller implements CS355Controller {
 	@Override
 	public void keyPressed(Iterator<Integer> iterator) 
 	{
-		if (this.state.getType() != IControllerState.stateType.THREE_DIM) {
-			// DO NOTHING. We are in 2D mode.
-			return;
-		}
-		
-		while (iterator.hasNext())
-		{
-			switch(iterator.next())
-			{
-			case KeyEvent.VK_W:
-				SceneModel.instance().moveForward(this.movementUnit); // Move forward
-				break;
-			case KeyEvent.VK_A:
-				SceneModel.instance().strafe(-this.movementUnit); // Move left
-				break;
-			case KeyEvent.VK_S:
-				SceneModel.instance().moveBackward(this.movementUnit); // Move backward
-				break;
-			case KeyEvent.VK_D:
-				SceneModel.instance().strafe(this.movementUnit); // Move right
-				break;
-			case KeyEvent.VK_Q:
-				SceneModel.instance().yaw(this.movementUnit/8); // Turn left
-				break;
-			case KeyEvent.VK_E:
-				SceneModel.instance().yaw(-this.movementUnit/8); // Turn right
-				break;
-			case KeyEvent.VK_R:
-				SceneModel.instance().changeAltitude(this.movementUnit); // Move up
-				break;
-			case KeyEvent.VK_F:
-				SceneModel.instance().changeAltitude(-this.movementUnit); // Move down
-				break;
-			case KeyEvent.VK_H:
-				SceneModel.instance().setCameraPosition(cameraHome); // Return to the original "home" position and orientation
-				SceneModel.instance().setCameraRotation(rotationHome);
-				break;
-			default:
-				System.out.println("3D Default path");
-			}
-		}
-		
+		this.state.keyPressed(iterator);
 		GUIFunctions.refresh();
 	}
 
@@ -396,7 +356,8 @@ public class Controller implements CS355Controller {
 	{
 		System.out.println("3D button pushed");
 		this.state = new Controller3DState();
-		
+//		this.hScrollbarChanged((int)this.scrollerSize / 2);
+//		this.vScrollbarChanged((int)this.scrollerSize / 2);
 	}
 	
 	public double[] threeDWorldToClip(Point3D point) 
@@ -438,23 +399,19 @@ public class Controller implements CS355Controller {
 		double endZ = end[2];
 		double endW = end[3];
 
-		if ((startX > startW && endX > endW) || (startX < -startW && endX < -endW))
-		{
+		if ((startX > startW && endX > endW) || (startX < -startW && endX < -endW)) {
 			return true;
 		}
 
-		if ((startY > startW && endY > endW) || (startY < -startW && endY < -endW)) 
-		{
+		if ((startY > startW && endY > endW) || (startY < -startW && endY < -endW)) {
 			return true;
 		}
 
-		if ((startZ > startW && endZ > endW))
-		{
+		if ((startZ > startW && endZ > endW)) {
 			return true;
 		}
 
-		if (startZ <= -startW || endZ <= -endW)
-		{
+		if (startZ <= -startW || endZ <= -endW)	{
 			return true;
 		}
 

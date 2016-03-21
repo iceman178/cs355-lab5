@@ -3,6 +3,7 @@ package cs355.controller;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.Iterator;
 
 import cs355.GUIFunctions;
 import cs355.model.drawing.*;
@@ -101,6 +102,11 @@ public class ControllerSelectState implements IControllerState
 		return stateType.SELECT;
 	}
 	
+	@Override
+	public void keyPressed(Iterator<Integer> iterator) 
+	{
+		// DO NOTHING	
+	}
 	
 	//-----------------------HANDLER FUNCTIONS------------------------------------------
 	
@@ -292,6 +298,7 @@ public class ControllerSelectState implements IControllerState
 	public void setMouseDragStart(Point2D.Double mouseDragStart) {
 		this.mouseDragStart = mouseDragStart;
 	}
+
 	
 	
 }
