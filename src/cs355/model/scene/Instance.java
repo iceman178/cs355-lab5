@@ -36,14 +36,14 @@ public class Instance {
 		model = new WireFrame();
 	}
 	
-	public Instance(boolean a) 
-	{
-		color = Color.WHITE;
-		position = new Point3D();
-		rotAngle = 0.0;
-		scale = 1.0;
-		model = new HouseModel();
-	}
+//	public Instance(boolean a) 
+//	{
+//		color = Color.WHITE;
+//		position = new Point3D();
+//		rotAngle = 0.0;
+//		scale = 1.0;
+//		model = new HouseModel();
+//	}
 	
 	
 	/**

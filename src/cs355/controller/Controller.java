@@ -359,38 +359,38 @@ public class Controller implements CS355Controller
 			switch(iterator.next())	
 			{
 				case KeyEvent.VK_W:
-					SceneModel.instance().moveForward(this.movementUnit);
+					SceneModel.instance().moveForward(movementUnit); // Move Forward
 					break;
 					
 				case KeyEvent.VK_A:
-					SceneModel.instance().strafeLeft(this.movementUnit);
+					SceneModel.instance().moveLeft(movementUnit); // Move Left
 					break;
 				
 				case KeyEvent.VK_S:
-					SceneModel.instance().moveBackward(this.movementUnit);
+					SceneModel.instance().moveBackward(movementUnit); // Move Backward
 					break;
 				
 				case KeyEvent.VK_D:
-					SceneModel.instance().strafeRight(this.movementUnit);
+					SceneModel.instance().moveRight(movementUnit); // Move Right
 					break;
 				
 				case KeyEvent.VK_Q:
-					SceneModel.instance().yaw(this.movementUnit);
+					SceneModel.instance().yaw(movementUnit); // Turn Left
 					break;
 				
 				case KeyEvent.VK_E:
-					SceneModel.instance().yaw(-this.movementUnit);
+					SceneModel.instance().yaw(-movementUnit); // Turn Right
 					break;
 				
 				case KeyEvent.VK_R:
-					SceneModel.instance().changeAltitude(this.movementUnit);
+					SceneModel.instance().changeAltitude(movementUnit); // Move Up
 					break;
 				
 				case KeyEvent.VK_F:
-					SceneModel.instance().changeAltitude(-this.movementUnit);
+					SceneModel.instance().changeAltitude(-movementUnit); // Move Down
 					break;
 				
-				case KeyEvent.VK_H:
+				case KeyEvent.VK_H: 										// Move Home
 					SceneModel.instance().setCameraPosition(cameraHome);
 					SceneModel.instance().setCameraRotation(Math.toDegrees(rotationHome));
 					break;
@@ -403,7 +403,6 @@ public class Controller implements CS355Controller
 	@Override
 	public void toggle3DModelDisplay() 
 	{
-		//System.out.println("3D button pushed");
 		if (mode3D) {
 			mode3D =! mode3D;
 			System.out.println("3D mode OFF");
