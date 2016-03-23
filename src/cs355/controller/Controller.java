@@ -13,6 +13,7 @@ import com.sun.glass.events.KeyEvent;
 import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
 import cs355.model.drawing.*;
+import cs355.model.scene.Instance;
 import cs355.model.scene.Point3D;
 import cs355.model.scene.SceneModel;
 import cs355.solution.CS355;
@@ -36,10 +37,10 @@ public class Controller implements CS355Controller
 	private boolean updating;
 	private Point2D.Double viewCenter;
 	private IControllerState state;
+	private boolean mode3D;
 	
 	private Point3D cameraHome;
 	private double rotationHome;
-	
 	
 	public static Controller instance() 
 	{
@@ -51,14 +52,15 @@ public class Controller implements CS355Controller
 
 	private Controller() 
 	{
+		mode3D = false;
 		this.zoom = 1.0;
 		this.scrollerSize = 512;
 		this.updating = false;
 		this.viewCenter = new Point2D.Double(0, 0);
 		this.state = new ControllerNothingState();
-		SceneModel.instance().setCameraPosition(new Point3D(0f, 1.5f, -25));
-		this.cameraHome = SceneModel.instance().getCameraPosition();
-		this.rotationHome = SceneModel.instance().getCameraRotation();
+		SceneModel.instance().setCameraPosition(new Point3D(0.0f, 1.5f, 25f));
+		this.cameraHome = new Point3D(0.0f, 1.5f, 25f);
+		this.rotationHome = SceneModel.instance().getYaw();
 	}
 	
 	
@@ -340,41 +342,104 @@ public class Controller implements CS355Controller
 	{
 		SceneModel.instance().open(file);
 		this.cameraHome = SceneModel.instance().getCameraPosition();
-		this.rotationHome = SceneModel.instance().getCameraRotation();
-		GUIFunctions.refresh();	
+		this.rotationHome = SceneModel.instance().getYaw();
+		GUIFunctions.refresh();
 	}
 
 	@Override
 	public void keyPressed(Iterator<Integer> iterator) 
 	{
-		this.state.keyPressed(iterator);
+		
+		if(this.state.getType() != IControllerState.stateType.THREE_DIM)
+			return;
+		
+		while (iterator.hasNext()) 
+		{
+			
+			switch(iterator.next())	
+			{
+				case KeyEvent.VK_W:
+					SceneModel.instance().moveForward(this.movementUnit);
+					break;
+					
+				case KeyEvent.VK_A:
+					SceneModel.instance().strafeLeft(this.movementUnit);
+					break;
+				
+				case KeyEvent.VK_S:
+					SceneModel.instance().moveBackward(this.movementUnit);
+					break;
+				
+				case KeyEvent.VK_D:
+					SceneModel.instance().strafeRight(this.movementUnit);
+					break;
+				
+				case KeyEvent.VK_Q:
+					SceneModel.instance().yaw(this.movementUnit);
+					break;
+				
+				case KeyEvent.VK_E:
+					SceneModel.instance().yaw(-this.movementUnit);
+					break;
+				
+				case KeyEvent.VK_R:
+					SceneModel.instance().changeAltitude(this.movementUnit);
+					break;
+				
+				case KeyEvent.VK_F:
+					SceneModel.instance().changeAltitude(-this.movementUnit);
+					break;
+				
+				case KeyEvent.VK_H:
+					SceneModel.instance().setCameraPosition(cameraHome);
+					SceneModel.instance().setCameraRotation(Math.toDegrees(rotationHome));
+					break;
+			}
+		}
+		
 		GUIFunctions.refresh();
 	}
 
 	@Override
 	public void toggle3DModelDisplay() 
 	{
-		System.out.println("3D button pushed");
+		//System.out.println("3D button pushed");
+		if (mode3D) {
+			mode3D =! mode3D;
+			System.out.println("3D mode OFF");
+		}
+		else {
+			mode3D =! mode3D;
+			System.out.println("3D mode ON");
+		}
+
 		this.state = new Controller3DState();
-//		this.hScrollbarChanged((int)this.scrollerSize / 2);
-//		this.vScrollbarChanged((int)this.scrollerSize / 2);
 	}
 	
-	public double[] threeDWorldToClip(Point3D point) 
+	public double[] threeDWorldToClip(Point3D point, Instance inst) 
 	{
-		float theta = (float) SceneModel.instance().getCameraRotation();
-		double c_x = SceneModel.instance().getCameraPosition().x;
-		double c_y = SceneModel.instance().getCameraPosition().y;
-		double c_z = SceneModel.instance().getCameraPosition().z;
+		float theta = (float) (SceneModel.instance().getYaw());
+		double c_x = SceneModel.instance().getCameraPosition().x + inst.getPosition().x;
+		double c_y = SceneModel.instance().getCameraPosition().y + inst.getPosition().y;
+		double c_z = SceneModel.instance().getCameraPosition().z + inst.getPosition().z;
 		double e = (farPlane + nearPlane) / (farPlane - nearPlane);
 		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
 
+		//World to camera translate
+		double x1 = point.x - c_x;
+		double y1 = point.y - c_y;
+		double z1 = point.z - c_z;
 		
-		double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
-		double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
-		double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
-		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
+		//World to camera rotate
+		double x2 = x1 * Math.cos(theta) + z1 * Math.sin(theta);
+		double z2 = -x1 * Math.sin(theta) + z1 * Math.cos(theta);
 
+		//Camera to Clip
+		double x = x2 * Math.sqrt(3) + Math.sqrt(3);
+		double y = y1 * Math.sqrt(3);
+		double z = f + e * z2;		
+		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
+		
 		double[] result = {x, y, z, bigW};
 
 		return result;

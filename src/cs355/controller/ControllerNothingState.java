@@ -30,11 +30,5 @@ public class ControllerNothingState implements IControllerState
 		return stateType.NOTHING;
 	}
 
-	@Override
-	public void keyPressed(Iterator<Integer> iterator) 
-	{
-		// DO NOTHING
-		
-	}
 
 }

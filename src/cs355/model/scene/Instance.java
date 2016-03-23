@@ -35,7 +35,7 @@ public class Instance {
 		scale = 1.0;
 		model = new WireFrame();
 	}
-
+	
 	public Instance(boolean a) 
 	{
 		color = Color.WHITE;

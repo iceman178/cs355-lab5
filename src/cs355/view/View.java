@@ -30,6 +30,7 @@ public class View implements ViewRefresher {
 		GUIFunctions.refresh();
 	}
 
+	
 	@Override
 	public void refreshView(Graphics2D g2d) {
 		ArrayList<Shape> shapes = (ArrayList<Shape>) Model.instance().getShapes();
@@ -52,59 +53,10 @@ public class View implements ViewRefresher {
 		}
 		
 		
-		ArrayList<Instance> instCollection = SceneModel.instance().instances();
-		
 		if(Controller.instance().getState() == IControllerState.stateType.THREE_DIM) 
 		{
-			
-			System.out.println("OBJECTS LIST SIZE = " + instCollection.size());
-			g2d.setTransform(Controller.instance().worldToView());
-			for(Instance inst : instCollection) 
-			{
-				g2d.setColor(inst.getColor());
-				List<Line3D> list = inst.getModel().getLines();
-				System.out.println("LINE LIST SIZE = " + list.size());
-				for(Line3D l : list) 
-				{
-					double[] startCoord = Controller.instance().threeDWorldToClip(l.start);
-					double[] endCoord = Controller.instance().threeDWorldToClip(l.end);
-					
-					if (!Controller.instance().clipTest(startCoord, endCoord)) 
-					{
-						Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
-						Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3])); 
-						g2d.drawLine((int) Math.round(start.x), (int) Math.round(start.y), (int) Math.round(end.x), (int) Math.round(end.y));
-					}
-				}
-			}
-			
+			render3DModel(g2d);
 		}
-		
-		// Default house
-		if(instCollection.size() == 0)
-		{
-			HouseModel house = new HouseModel();
-			List<Line3D> list = house.getLines();
-			
-			Color houseColor = Color.GREEN;
-			g2d.setColor(houseColor);
-			
-			for(Line3D l : list)
-			{
-				double[] startCoord = Controller.instance().threeDWorldToClip(l.start);
-				double[] endCoord = Controller.instance().threeDWorldToClip(l.end);
-				
-				if (!Controller.instance().clipTest(startCoord, endCoord))
-				{
-					Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
-					Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3])); 
-					g2d.drawLine((int) Math.round(start.x), (int) Math.round(start.y), (int) Math.round(end.x), (int) Math.round(end.y));
-				}
-			}
-		}
-		
-		
-
 	}
 	
 	//Use a factory to determine what type is being dealt with
@@ -228,7 +180,32 @@ public class View implements ViewRefresher {
 		return null;
 	}
 	
-	
+	public void render3DModel(Graphics2D g2d) 
+	{
+
+		ArrayList<Instance> theHood = SceneModel.instance().instances();
+		System.out.println("OBJECTS LIST SIZE = " + theHood.size());
+		g2d.setTransform(Controller.instance().worldToView());
+		for(Instance inst : theHood) {
+//			g2d.setTransform(Controller.instance().objectToView3D(inst));
+			g2d.setColor(inst.getColor());
+			List<Line3D> list = inst.getModel().getLines();
+//			System.out.println("LINE LIST SIZE = " + list.size());
+			for(Line3D l : list) {
+
+				double[] startCoord = Controller.instance().threeDWorldToClip(l.start, inst);
+				double[] endCoord = Controller.instance().threeDWorldToClip(l.end, inst);
+
+				if (!Controller.instance().clipTest(startCoord, endCoord)) {
+//					System.out.println("CLIP PASSED");
+					Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
+					Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3]));
+
+					g2d.drawLine((int) Math.round(start.x), (int) Math.round(start.y), (int) Math.round(end.x), (int) Math.round(end.y));
+				}
+			}
+		}
+	}
 	
 	
 	

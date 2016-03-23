@@ -102,11 +102,6 @@ public class ControllerSelectState implements IControllerState
 		return stateType.SELECT;
 	}
 	
-	@Override
-	public void keyPressed(Iterator<Integer> iterator) 
-	{
-		// DO NOTHING	
-	}
 	
 	//-----------------------HANDLER FUNCTIONS------------------------------------------
 	

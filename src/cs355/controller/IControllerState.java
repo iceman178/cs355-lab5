@@ -16,7 +16,5 @@ public interface IControllerState
 	
 	public void mouseDragged(MouseEvent arg0);
 	
-	public void keyPressed(Iterator<Integer> iterator);
-	
 	public stateType getType();
 }

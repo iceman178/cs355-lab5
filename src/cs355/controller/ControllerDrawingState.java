@@ -403,22 +403,6 @@ public class ControllerDrawingState implements IControllerState
 		Model.instance().updateLastShape(square);
 	}
 
-	@Override
-	public void keyPressed(Iterator<Integer> iterator) 
-	{
-		// DO NOTHING
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }
+

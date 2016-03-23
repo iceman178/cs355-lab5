@@ -1,9 +1,6 @@
 package cs355.model.scene;
 
 
-
-
-
 public class SceneModel extends CS355Scene
 {
 
@@ -26,28 +23,28 @@ public class SceneModel extends CS355Scene
 	public SceneModel()	
 	{
 		this.setCameraPosition(new Point3D(0.0d, 0.0d, 0.0d));
-		this.setCameraRotation(0.0);
+		this.setCameraRotation(180.0);
 //		this.pitch = 0.0f;
 //		this.roll = 0.0f;
 	}
 	
 	public SceneModel(Point3D location)	{
 		this.setCameraPosition(location);
-		this.setCameraRotation(0.0);
+		this.setCameraRotation(180);
 //		this.pitch = 0.0f;
 //		this.roll = 0.0f;
 	}
 
-	public void changeAltitude(float distance) 
-	{
+	
+	// moves the camera up or down ignoring current rotation
+	public void changeAltitude(float distance) {
 		Point3D cam = this.getCameraPosition();
 		cam.y += distance;
 		this.setCameraPosition(cam);
 	}
-	
+
 	// moves the camera forward relative to its current rotation
-	public void moveForward(float distance)	
-	{
+	public void moveForward(float distance)	{
 		Point3D cam = this.getCameraPosition();
 		cam.x -= distance * (float) Math.sin(Math.toRadians(this.getCameraRotation()));
 		cam.z += distance * (float) Math.cos(Math.toRadians(this.getCameraRotation()));
@@ -55,8 +52,7 @@ public class SceneModel extends CS355Scene
 	}
 
 	// moves the camera backward relative to its current rotation
-	public void moveBackward(float distance) 
-	{
+	public void moveBackward(float distance) {
 		Point3D cam = this.getCameraPosition();
 		cam.x += distance * (float) Math.sin(Math.toRadians(this.getCameraRotation()));
 		cam.z -= distance * (float) Math.cos(Math.toRadians(this.getCameraRotation()));
@@ -64,34 +60,31 @@ public class SceneModel extends CS355Scene
 	}
 
 	// strafe the camera left relative to its current rotation
-	public void strafeLeft(float distance) 
-	{
-		Point3D cam = this.getCameraPosition();
-		cam.x -= distance * (float) Math.sin(Math.toRadians(this.getCameraRotation() - 90));
-		cam.z += distance * (float) Math.cos(Math.toRadians(this.getCameraRotation() - 90));
-		this.setCameraPosition(cam);
-	}
-
-	// strafe the camera right relative to its current rotation
-	public void strafeRight(float distance)	
-	{
+	public void strafeLeft(float distance) {
 		Point3D cam = this.getCameraPosition();
 		cam.x -= distance * (float) Math.sin(Math.toRadians(this.getCameraRotation() + 90));
 		cam.z += distance * (float) Math.cos(Math.toRadians(this.getCameraRotation() + 90));
 		this.setCameraPosition(cam);
 	}
-	
-	// combined left/right strafe method. strafe's left/right relative to camera's current rotation
-	public void strafe(float distance) 
-	{
-		int negate = distance >= 0 ? -1 : 1;
-		float offset = 90 * negate;
 
+	// strafe the camera right relative to its current rotation
+	public void strafeRight(float distance)	{
 		Point3D cam = this.getCameraPosition();
-		cam.x += negate * distance * (float) Math.sin(Math.toRadians(this.getCameraRotation() + offset));
-		cam.z += -negate * distance * (float) Math.cos(Math.toRadians(this.getCameraRotation() + offset));
+		cam.x -= distance * (float) Math.sin(Math.toRadians(this.getCameraRotation() - 90));
+		cam.z += distance * (float) Math.cos(Math.toRadians(this.getCameraRotation() - 90));
 		this.setCameraPosition(cam);
 	}
+	
+//	// combined left/right strafe method. strafe's left/right relative to camera's current rotation
+//	public void strafe(float distance) {
+//		int negate = distance >= 0 ? -1 : 1;
+//		float offset = 90 * negate;
+//
+//		Point3D cam = this.getCameraPosition();
+//		cam.x += negate * distance * (float) Math.sin(Math.toRadians(this.getCameraRotation() + offset));
+//		cam.z += -negate * distance * (float) Math.cos(Math.toRadians(this.getCameraRotation() + offset));
+//		this.setCameraPosition(cam);
+//	}
 	
 	
 	
@@ -140,7 +133,7 @@ public class SceneModel extends CS355Scene
 //	public void setRoll(float roll)	{
 //		this.roll = roll;
 //	}
-	
+//	
 	
 	
 }
