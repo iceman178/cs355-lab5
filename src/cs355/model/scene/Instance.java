@@ -35,16 +35,7 @@ public class Instance {
 		scale = 1.0;
 		model = new WireFrame();
 	}
-	
-//	public Instance(boolean a) 
-//	{
-//		color = Color.WHITE;
-//		position = new Point3D();
-//		rotAngle = 0.0;
-//		scale = 1.0;
-//		model = new HouseModel();
-//	}
-	
+
 	
 	/**
 	 * A constructor that takes one parameter per field.
