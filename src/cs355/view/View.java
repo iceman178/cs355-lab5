@@ -22,7 +22,8 @@ import cs355.model.scene.Line3D;
 import cs355.model.scene.Point3D;
 import cs355.model.scene.SceneModel;
 
-public class View implements ViewRefresher {
+public class View implements ViewRefresher 
+{
 
 	@Override
 	public void update(Observable arg0, Object arg1) 
@@ -32,7 +33,8 @@ public class View implements ViewRefresher {
 
 	
 	@Override
-	public void refreshView(Graphics2D g2d) {
+	public void refreshView(Graphics2D g2d) 
+	{
 		ArrayList<Shape> shapes = (ArrayList<Shape>) Model.instance().getShapes();
 		
 		int curShapeIndex = Model.instance().getCurShapeIndex();
@@ -182,22 +184,21 @@ public class View implements ViewRefresher {
 	
 	public void render3DModel(Graphics2D g2d) 
 	{
-
-		ArrayList<Instance> theHood = SceneModel.instance().instances();
-		System.out.println("OBJECTS LIST SIZE = " + theHood.size());
+		ArrayList<Instance> instCollection = SceneModel.instance().instances();
+		System.out.println("Objects list size=" + instCollection.size());
 		g2d.setTransform(Controller.instance().worldToView());
-		for(Instance inst : theHood) {
-//			g2d.setTransform(Controller.instance().objectToView3D(inst));
+		for(Instance inst : instCollection) 
+		{
 			g2d.setColor(inst.getColor());
 			List<Line3D> list = inst.getModel().getLines();
-//			System.out.println("LINE LIST SIZE = " + list.size());
-			for(Line3D l : list) {
 
+			for(Line3D l : list) 
+			{
 				double[] startCoord = Controller.instance().threeDWorldToClip(l.start, inst);
 				double[] endCoord = Controller.instance().threeDWorldToClip(l.end, inst);
 
-				if (!Controller.instance().clipTest(startCoord, endCoord)) {
-//					System.out.println("CLIP PASSED");
+				if (!Controller.instance().clipTest(startCoord, endCoord)) 
+				{
 					Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
 					Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3]));
 
