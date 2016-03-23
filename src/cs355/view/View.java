@@ -185,7 +185,7 @@ public class View implements ViewRefresher
 	public void render3DModel(Graphics2D g2d) 
 	{
 		ArrayList<Instance> instCollection = SceneModel.instance().instances();
-		System.out.println("Objects list size=" + instCollection.size());
+		//System.out.println("Objects list size=" + instCollection.size());
 		g2d.setTransform(Controller.instance().worldToView());
 		for(Instance inst : instCollection) 
 		{

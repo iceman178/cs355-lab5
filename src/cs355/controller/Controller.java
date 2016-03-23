@@ -343,6 +343,7 @@ public class Controller implements CS355Controller
 		SceneModel.instance().open(file);
 		this.cameraHome = SceneModel.instance().getCameraPosition();
 		this.rotationHome = SceneModel.instance().getYaw();
+		SceneModel.instance().setCameraRotation(SceneModel.instance().getCameraRotation() + 180.0);
 		GUIFunctions.refresh();
 	}
 

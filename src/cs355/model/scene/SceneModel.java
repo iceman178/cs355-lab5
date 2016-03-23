@@ -17,7 +17,7 @@ public class SceneModel extends CS355Scene
 	public SceneModel()	
 	{
 		this.setCameraPosition(new Point3D(0.0d, 0.0d, 0.0d));
-		this.setCameraRotation(180.0);
+		this.setCameraRotation(180.0); // 180
 	}
 
 	
