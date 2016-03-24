@@ -393,7 +393,7 @@ public class Controller implements CS355Controller
 				
 				case KeyEvent.VK_H: 										// Move Home
 					SceneModel.instance().setCameraPosition(cameraHome);
-					SceneModel.instance().setCameraRotation(Math.toDegrees(rotationHome));
+					SceneModel.instance().setCameraRotation(180);
 					break;
 			}
 		}
@@ -404,16 +404,23 @@ public class Controller implements CS355Controller
 	@Override
 	public void toggle3DModelDisplay() 
 	{
+		if (this.state.getType() != IControllerState.stateType.THREE_DIM)
+		{
+			mode3D = false;
+		}
+
 		if (mode3D) {
 			mode3D =! mode3D;
-			System.out.println("3D mode OFF");
+			this.state = new ControllerNothingState();
+			//System.out.println("3D mode OFF " + mode3D);
 		}
 		else {
 			mode3D =! mode3D;
-			System.out.println("3D mode ON");
+			//System.out.println("3D mode ON " + mode3D);
+			this.state = new Controller3DState();
 		}
-
-		this.state = new Controller3DState();
+		
+		GUIFunctions.refresh();
 	}
 	
 	public double[] threeDWorldToClip(Point3D point, Instance inst) 
@@ -464,19 +471,23 @@ public class Controller implements CS355Controller
 		double endZ = end[2];
 		double endW = end[3];
 
-		if ((startX > startW && endX > endW) || (startX < -startW && endX < -endW)) {
+		if ((startX > startW && endX > endW) || (startX < -startW && endX < -endW)) 
+		{
 			return true;
 		}
 
-		if ((startY > startW && endY > endW) || (startY < -startW && endY < -endW)) {
+		if ((startY > startW && endY > endW) || (startY < -startW && endY < -endW)) 
+		{
 			return true;
 		}
 
-		if ((startZ > startW && endZ > endW)) {
+		if ((startZ > startW && endZ > endW)) 
+		{
 			return true;
 		}
 
-		if (startZ <= -startW || endZ <= -endW)	{
+		if (startZ <= -startW || endZ <= -endW)	
+		{
 			return true;
 		}
 

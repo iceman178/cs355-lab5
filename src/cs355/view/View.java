@@ -25,12 +25,37 @@ import cs355.model.scene.SceneModel;
 public class View implements ViewRefresher 
 {
 
+	
 	@Override
 	public void update(Observable arg0, Object arg1) 
 	{
 		GUIFunctions.refresh();
 	}
 
+	public void render3DModel(Graphics2D g2d) 
+	{
+		ArrayList<Instance> instCollection = SceneModel.instance().instances();
+		g2d.setTransform(Controller.instance().worldToView());
+		
+		for(Instance inst : instCollection) 
+		{
+			g2d.setColor(inst.getColor());
+			List<Line3D> list = inst.getModel().getLines();
+
+			for(Line3D l : list) 
+			{
+				double[] startCoord = Controller.instance().threeDWorldToClip(l.start, inst);
+				double[] endCoord = Controller.instance().threeDWorldToClip(l.end, inst);
+
+				if (!Controller.instance().clipTest(startCoord, endCoord)) 
+				{
+					Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
+					Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3]));
+					g2d.drawLine((int) Math.round(start.x), (int) Math.round(start.y), (int) Math.round(end.x), (int) Math.round(end.y));
+				}
+			}
+		}
+	}
 	
 	@Override
 	public void refreshView(Graphics2D g2d) 
@@ -182,31 +207,7 @@ public class View implements ViewRefresher
 		return null;
 	}
 	
-	public void render3DModel(Graphics2D g2d) 
-	{
-		ArrayList<Instance> instCollection = SceneModel.instance().instances();
-		//System.out.println("Objects list size=" + instCollection.size());
-		g2d.setTransform(Controller.instance().worldToView());
-		for(Instance inst : instCollection) 
-		{
-			g2d.setColor(inst.getColor());
-			List<Line3D> list = inst.getModel().getLines();
-
-			for(Line3D l : list) 
-			{
-				double[] startCoord = Controller.instance().threeDWorldToClip(l.start, inst);
-				double[] endCoord = Controller.instance().threeDWorldToClip(l.end, inst);
-
-				if (!Controller.instance().clipTest(startCoord, endCoord)) 
-				{
-					Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
-					Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3]));
-
-					g2d.drawLine((int) Math.round(start.x), (int) Math.round(start.y), (int) Math.round(end.x), (int) Math.round(end.y));
-				}
-			}
-		}
-	}
+	
 	
 	
 	

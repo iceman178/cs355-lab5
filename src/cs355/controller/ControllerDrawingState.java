@@ -34,7 +34,6 @@ public class ControllerDrawingState implements IControllerState
 		return avg;
 	}
 	
-	// DONE
 	@Override
 	public void mousePressed(MouseEvent arg0) 
 	{
@@ -56,7 +55,6 @@ public class ControllerDrawingState implements IControllerState
 				
 				Triangle triangle = new Triangle(Model.instance().getSelectedColor(), triCenter, p1, p2, p3);
 				Model.instance().addShape(triangle);
-				//resetCurMode();;
 				GUIFunctions.refresh();
 			}
 		}
@@ -104,15 +102,12 @@ public class ControllerDrawingState implements IControllerState
 		}
 	}
 
-	// DONE
 	@Override
 	public void mouseReleased(MouseEvent arg0) 
 	{
 		//NOTHING
-		
 	}
 
-	// DONE
 	@Override
 	public void mouseDragged(MouseEvent arg0)
 	{
@@ -151,7 +146,6 @@ public class ControllerDrawingState implements IControllerState
 	
 	}
 
-	// DONE
 	@Override
 	public stateType getType() 
 	{
